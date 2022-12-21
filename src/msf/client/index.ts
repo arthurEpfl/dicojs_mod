@@ -1,0 +1,1 @@
+export { AntibiogoClient } from './federated'

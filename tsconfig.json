@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "lib": ["ES5", "DOM"],
+
+    "strict": true,
+
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "downlevelIteration": true,
+
+    "declaration": true,
+    
+    "typeRoots": ["./node_modules/@types"],
+
+    "outDir": "dist",
+    "baseUrl": "*",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src"]
+}
