@@ -21,10 +21,14 @@ npm run prod
 
 ```html
 <script>
+  // base64-encoded pellet images
+  const base64Strings = [ /*...*/ ]
+  
   // config object and fields are optional, as the default config will fill missing information
   const config = {
     port: 4444
   }
+  
   Antibiogo.init(config).then((antibiogo) => {
     const predictions = antibiogo.identify(base64Strings)
     
