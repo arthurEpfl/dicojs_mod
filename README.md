@@ -17,7 +17,7 @@ To prepare the lib for production and minify the bundled JavaScript, run
 npm run prod
 ```
 
-## Use the lib
+## Usage
 
 ```html
 <script>
