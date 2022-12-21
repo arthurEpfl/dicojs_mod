@@ -10,8 +10,6 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "downlevelIteration": true,
-
-    "declaration": true,
     
     "typeRoots": ["./node_modules/@types"],
 
