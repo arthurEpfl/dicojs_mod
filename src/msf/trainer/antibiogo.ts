@@ -1,18 +1,23 @@
 import { Backbone, PrototypicalTrainer, Base64, client as clients, data, antibiogo } from '..'
 import { informant as informants } from '../../core'
-import { CONFIG } from '../../config'
+import { Config, defaultConfig, isConfig } from '../../config'
 
 /**
  * Convenient top-level class.
  */
 export class Antibiogo {
-  constructor (
+  private constructor (
     public readonly trainer: PrototypicalTrainer,
-    private readonly backbone: Backbone
+    private readonly backbone: Backbone,
+    public readonly config: Config
   ) {}
 
-  static async init (): Promise<Antibiogo> {
-    const client = new clients.AntibiogoClient(CONFIG.serverUrl)
+  static async init (configObject?: unknown): Promise<Antibiogo> {
+    const config = isConfig(configObject)
+      ? { ...defaultConfig, configObject }
+      : defaultConfig
+
+    const client = new clients.AntibiogoClient(config.serverUrl)
     const informant = new informants.FederatedInformant(antibiogo)
 
     const prototypicalModel = await client.getLatestModel()
@@ -23,7 +28,8 @@ export class Antibiogo {
 
     return new this(
       trainer,
-      await Backbone.init()
+      await Backbone.init(),
+      config
     )
   }
 

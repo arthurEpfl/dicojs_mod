@@ -10,7 +10,7 @@ function memoryUsage (): void {
  * Converts a base64 string to an image tensor and embeds the image into some vector space.
  */
 export class Backbone {
-  constructor (
+  private constructor (
     private readonly model: tf.GraphModel
   ) {}
 
