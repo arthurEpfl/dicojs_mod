@@ -9,9 +9,9 @@ npm ci
 npm run build
 ```
 
-Built files are located in the generated `dist/` directory. They are composed of Node.js TypeScript code transpiled to Node.js JavaScript. Then, the resulting JavaScript code is bundled for the browser.
+Built files are located in the generated `dist/` directory. They are composed of Node.js TypeScript code transpiled to Node.js JavaScript. Then, the resulting JavaScript code is bundled for the browser in a single `dist/discoj.js` file.
 
-To prepare the lib for production and minify the bundled JavaScript, run
+To prepare the lib for production and _minify_ the bundled JavaScript, run
 
 ```
 npm run prod
