@@ -1,9 +1,10 @@
 {
-  "name": "@epfml/discojs",
+  "name": "epfl-antibiogo-lib",
   "private": true,
+  "main": "./dist/disco.js",
   "scripts": {
-    "build": "rm -rf dist && tsc && webpack --config webpack.dev.js",
-    "prod": "rm -rf dist && tsc && webpack --config webpack.prod.js",
+    "build": "rm -rf dist && webpack --config-name dev",
+    "prod": "rm -rf dist && webpack --config-name prod",
     "lint": "eslint --fix --max-warnings 0 ."
   },
   "repository": {
@@ -39,7 +40,7 @@
     "path-browserify": "1",
     "querystring-es3": "0.2",
     "stream-browserify": "3",
-    "ts-loader": "9",
+    "ts-loader": "^9.4.2",
     "ts-node": "10",
     "typescript": "<4.5.0",
     "webpack": "5",

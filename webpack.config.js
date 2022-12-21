@@ -1,10 +1,19 @@
 const path = require('path')
 
-module.exports = {
-  entry: './dist/index.js',
-  mode: 'development',
+const basicConfig = {
+  entry: './src/index.ts',
   devtool: 'source-map',
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      }
+    ]
+  },
   resolve: {
+    extensions: ['.ts', '.js'],
     fallback: {
       crypto: require.resolve('crypto-browserify'),
       path: require.resolve('path-browserify'),
@@ -17,3 +26,16 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   }
 }
+
+module.exports = [
+  {
+    name: 'dev',
+    mode: 'development',
+    ...basicConfig
+  },
+  {
+    name: 'prod',
+    mode: 'production',
+    ...basicConfig
+  }
+]
