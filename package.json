@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "build": "rm -rf dist && tsc && webpack --config webpack.dev.js",
-    "prod": "rm -rf dist && tsc && webpack --config webpack.prod.js"
+    "prod": "rm -rf dist && tsc && webpack --config webpack.prod.js",
+    "lint": "eslint --fix --max-warnings 0 ."
   },
   "repository": {
     "type": "git",
