@@ -2,7 +2,7 @@
 
 ## Install and build
 
-Type the following commands to install the Node.js modules and build the project.
+Type the following commands to install the Node.js modules and build the project
 
 ```
 npm ci
