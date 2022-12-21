@@ -16,3 +16,36 @@ To prepare the lib for production and minify the bundled JavaScript, run
 ```
 npm run prod
 ```
+
+## Use the lib
+
+```html
+<script>
+  // config object and fields are optional, as the default config will fill missing information
+  const config = {
+    port: 4444
+  }
+  Antibiogo.init(config).then((antibiogo) => {
+    const predictions = antibiogo.identify(base64Strings)
+    
+    if (predictions[0].length === 1) {
+      console.log("prediction on first pellet:", predictions[0][0])
+    } else if (predictions.length > 1) {
+      console.log("predictions on first pellet:", predictions[0].join(", "))
+    } else {
+      console.log("first pellet was not recognized, it might belong to a new class!")
+    }
+    
+    // user manually validates predicted labels, effectively
+    // mapping predictions from string[][] to string[]
+    
+    // learn from human-validated predictions
+    antibiogo.fit(base64Strings, predictions)
+    
+    // push our local (updated) model to the server and fetch
+    // the newly aggregated server-side model
+    // !!! the exact scheme (when to push, when to fetch) has yet to be agreed upon !!!
+    antibiogo.communicate().catch(console.error)
+  }).catch(console.error)
+</script>
+```
