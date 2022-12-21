@@ -30,7 +30,7 @@ npm run prod
     
     if (predictions[0].length === 1) {
       console.log("prediction on first pellet:", predictions[0][0])
-    } else if (predictions.length > 1) {
+    } else if (predictions[0].length > 1) {
       console.log("predictions on first pellet:", predictions[0].join(", "))
     } else {
       console.log("first pellet was not recognized, it might belong to a new class!")
