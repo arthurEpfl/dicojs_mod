@@ -2,11 +2,11 @@
 
 ## Install and build
 
-Type the following commands to install the Node.js modules and build the project
+Type the following commands to install the Node.js modules and build the project for the Antibiogo mobile app
 
 ```
 npm ci
-npm run build
+npm run build:web
 ```
 
 Built files are located in the generated `dist/` directory. They are composed of Node.js TypeScript code transpiled to Node.js JavaScript. Then, the resulting JavaScript code is bundled for the browser in a single `dist/discoj.js` file.
@@ -14,7 +14,7 @@ Built files are located in the generated `dist/` directory. They are composed of
 To prepare the lib for production and _minify_ the bundled JavaScript, run
 
 ```
-npm run prod
+npm run prod:web
 ```
 
 ## Usage
