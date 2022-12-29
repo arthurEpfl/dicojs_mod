@@ -1,6 +1,6 @@
 import { Range } from 'immutable'
 
-import { tf } from '../..'
+import { tf } from 'tfjs'
 import { Dataset } from '../dataset'
 import { Data, ImageData, DataSplit } from '../data'
 import { DataLoader, DataConfig } from '../data_loader'

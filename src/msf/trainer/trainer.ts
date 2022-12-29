@@ -1,7 +1,8 @@
 import { List, Map } from 'immutable'
 
+import { tf } from 'tfjs'
 import { client as clients } from '..'
-import { Centroids, informant, tf, WeightsContainer } from '../../core'
+import { Centroids, informant, WeightsContainer } from '../../core'
 
 export class PrototypicalTrainer {
   constructor (

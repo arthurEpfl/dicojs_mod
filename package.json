@@ -3,8 +3,10 @@
   "private": true,
   "main": "./dist/disco.js",
   "scripts": {
-    "build": "rm -rf dist && webpack --config-name dev",
-    "prod": "rm -rf dist && webpack --config-name prod",
+    "build:node": "rm -rf dist && webpack --config-name node-dev",
+    "build:web": "rm -rf dist && webpack --config-name web-dev",
+    "prod:node": "rm -rf dist && webpack --config-name node-prod",
+    "prod:web": "rm -rf dist && webpack --config-name web-prod",
     "lint": "eslint --fix --max-warnings 0 ."
   },
   "repository": {
@@ -18,6 +20,7 @@
   "dependencies": {
     "@koush/wrtc": "0.5",
     "@tensorflow/tfjs": "^4.1.0",
+    "@tensorflow/tfjs-node": "^4.1.0",
     "@types/msgpack-lite": "0.1",
     "axios": "0.27",
     "immutable": "4",

@@ -1,4 +1,4 @@
-import { tf } from '../core'
+import { tf } from 'tfjs'
 import { Pellet, Embedding } from './types'
 
 function memoryUsage (): void {

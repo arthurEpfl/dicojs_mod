@@ -1,6 +1,7 @@
 import * as msgpack from 'msgpack-lite'
 
-import { tf, WeightsContainer, Centroids } from '..'
+import { tf } from 'tfjs'
+import { WeightsContainer, Centroids } from '..'
 
 interface Serialized {
   shape: number[]

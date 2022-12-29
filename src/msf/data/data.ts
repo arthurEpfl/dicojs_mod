@@ -1,5 +1,5 @@
 import { Base64, Pellet } from '../types'
-import { tf } from '../../core'
+import { tf } from 'tfjs'
 
 // only supports .jpg
 export function loadPellet (base64: Base64): Pellet {

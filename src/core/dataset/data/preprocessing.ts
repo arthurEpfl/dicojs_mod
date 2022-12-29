@@ -1,4 +1,5 @@
-import { tf, Task } from '../..'
+import { tf } from 'tfjs'
+import { Task } from '../..'
 
 type PreprocessImage = (image: tf.TensorContainer) => tf.TensorContainer
 

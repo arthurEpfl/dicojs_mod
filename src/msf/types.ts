@@ -1,4 +1,4 @@
-import { tf } from '../core'
+import { tf } from 'tfjs'
 
 export type Base64 = string
 export type Pellet = tf.Tensor3D

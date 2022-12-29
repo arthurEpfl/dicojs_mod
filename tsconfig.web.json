@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "tfjs": ["src/tfjs/tfjs_web.ts"]
+    }
+  }
+}

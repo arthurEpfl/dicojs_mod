@@ -1,4 +1,5 @@
-import { tf, Task } from '../..'
+import { tf } from 'tfjs'
+import { Task } from '../..'
 import { getPreprocessImage, ImagePreprocessing } from './preprocessing'
 import { Dataset } from '../dataset'
 import { Data } from './data'
