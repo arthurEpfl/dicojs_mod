@@ -20,7 +20,7 @@ npm run prod:web
 ## Usage
 
 ```html
-<script>
+<script type="text/javascript" src="dist/disco.js">
   // base64-encoded pellet images
   const base64Strings = [ /*...*/ ]
   
