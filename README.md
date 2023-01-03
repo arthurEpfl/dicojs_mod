@@ -21,16 +21,22 @@ npm run prod:web
 
 ```html
 <script type="text/javascript" src="dist/disco.js">
+  // number of pellet images
+  const NB_SAMPLES = 16
   // base64-encoded pellet images
   const base64Strings = [ /*...*/ ]
+  // all images have dimension 64x64
+  const dimensions = new Array(NB_SAMPLES).fill([64, 64])
   
   // config object and fields are optional, as the default config will fill missing information
   const config = {
+    protocol: 'http',
+    url: 'localhost',
     port: 4444
   }
   
   Antibiogo.init(config).then((antibiogo) => {
-    const predictions = antibiogo.identify(base64Strings)
+    const predictions = antibiogo.identify(base64Strings, dimensions)
     
     if (predictions[0].length === 1) {
       console.log("prediction on first pellet:", predictions[0][0])
@@ -44,7 +50,7 @@ npm run prod:web
     // mapping predictions from string[][] to string[]
     
     // learn from human-validated predictions
-    antibiogo.fit(base64Strings, predictions)
+    antibiogo.fit(base64Strings, dimensions, predictions)
     
     // push our local (updated) model to the server and fetch
     // the newly aggregated server-side model
