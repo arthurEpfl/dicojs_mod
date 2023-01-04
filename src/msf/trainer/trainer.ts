@@ -22,12 +22,16 @@ export class PrototypicalTrainer {
   predict (dataset: tf.Tensor1D[]): string[][] {
     return dataset.map((tensor) =>
       this.prototypes.positions.weights
-        .map((centroid) =>
-          centroid.sub(tensor).norm(2).dataSync()[0])
-        .filter((distance, idx) =>
-          distance <= this.prototypes.radius[idx])
-        .map((_, idx) => this.prototypes.labels[idx]))
-      .filter((e) => e !== undefined)
+        .map((centroid, idx) =>
+          [
+            centroid.sub(tensor).norm(2).dataSync()[0],
+            this.prototypes.labels[idx]
+          ] as [number, string])
+        .filter(([distance, _], idx) => {
+          return distance <= this.prototypes.radius[idx]
+        })
+        .map(([_, label]) => label))
+      .map((e) => e.length ? e : ['New label (user input required)'])
   }
 
   /**
