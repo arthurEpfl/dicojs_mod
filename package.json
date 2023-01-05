@@ -1,12 +1,14 @@
 {
   "name": "epfl-antibiogo-lib",
   "private": true,
-  "main": "./dist/disco.js",
+  "browser": "/dist/browser/disco.js",
+  "main": "./dist/node/disco.js",
+  "types": "./dist/node/index.d.ts",
   "scripts": {
-    "build:node": "rm -rf dist && webpack --config-name node-dev",
-    "build:web": "rm -rf dist && webpack --config-name web-dev",
-    "prod:node": "rm -rf dist && webpack --config-name node-prod",
-    "prod:web": "rm -rf dist && webpack --config-name web-prod",
+    "build:node": "rm -rf dist/node && webpack --config-name node-dev",
+    "build:web": "rm -rf dist/browser && webpack --config-name web-dev",
+    "prod:node": "rm -rf dist/node && webpack --config-name node-prod",
+    "prod:web": "rm -rf dist/browser && webpack --config-name web-prod",
     "lint": "eslint --fix --max-warnings 0 ."
   },
   "repository": {
@@ -47,6 +49,7 @@
     "ts-node": "10",
     "typescript": "<4.5.0",
     "webpack": "5",
-    "webpack-cli": "4"
+    "webpack-cli": "4",
+    "webpack-node-externals": "^3.0.0"
   }
 }

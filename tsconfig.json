@@ -12,6 +12,7 @@
     "downlevelIteration": true,
     
     "declaration": true,
+    "declarationDir": "dist/node",
     
     "typeRoots": ["./node_modules/@types"],
 
