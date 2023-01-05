@@ -27,11 +27,9 @@ export class PrototypicalTrainer {
             centroid.sub(tensor).norm(2).dataSync()[0],
             this.prototypes.labels[idx]
           ] as [number, string])
-        .filter(([distance, _], idx) => {
-          return distance <= this.prototypes.radius[idx]
-        })
+        .filter(([distance, _], idx) =>
+          distance <= this.prototypes.radius[idx])
         .map(([_, label]) => label))
-      .map((e) => e.length ? e : ['New label (user input required)'])
   }
 
   /**
