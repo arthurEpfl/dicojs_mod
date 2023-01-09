@@ -2,19 +2,48 @@
 
 ## Install and build
 
-Type the following commands to install the Node.js modules and build the project for the Antibiogo mobile app
+### Install dependencies
+
+Install the required Node.js modules
 
 ```
 npm ci
+```
+
+### Build the project for the Web
+
+Bundle the project for WebView
+
+```
 npm run build:web
 ```
 
-Built files are located in the generated `dist/` directory. They are composed of Node.js TypeScript code transpiled to Node.js JavaScript. Then, the resulting JavaScript code is bundled for the browser in a single `dist/discoj.js` file.
+Built files are located in the generated `dist/browser/` directory. They are composed of Node.js TypeScript code transpiled to Node.js JavaScript. Then, the resulting JavaScript code is bundled for the browser in a single `dist/browser/discoj.js` file.
 
 To prepare the lib for production and _minify_ the bundled JavaScript, run
 
 ```
 npm run prod:web
+```
+
+### Build the project for Node.js
+
+Build the project for Node.js
+
+```
+npm run build:node
+```
+
+Built files are located in the generated `dist/node/` directort. They are composed of Node.js TypeScript code transpiled to Node.js JavaScript. The lib is meant to be used as a dependency to other Node projects, as it is not bundled. You can do so by adding the following line to your `package.json`
+
+```
+file: "/path/to/discojs/"
+```
+
+To prepare the lib for production, run
+
+```
+npm run prod:node
 ```
 
 ## Usage
