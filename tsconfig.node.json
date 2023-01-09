@@ -3,6 +3,7 @@
   "compilerOptions": {
     "paths": {
       "tfjs": ["src/tfjs/tfjs_node.ts"]
-    }
-  }
+    },
+  },
+  "exclude": ["src/msf/data/**.ts", "src/tfjs/tfjs_web.ts"],
 }

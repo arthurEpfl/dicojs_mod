@@ -4,4 +4,8 @@ export { tf } from 'tfjs'
 export * from './core'
 export { Config, isConfig, defaultConfig } from './config'
 
-Object.defineProperty(window, 'Antibiogo', { value: Antibiogo })
+export * as msf from './msf'
+
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'Antibiogo', { value: Antibiogo })
+}

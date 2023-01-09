@@ -1,6 +1,8 @@
 const path = require('path')
 const { mergeDeep } = require('immutable')
 
+const nodeExternals = require('webpack-node-externals')
+
 const basicConfig = {
   entry: './src/index.ts',
   devtool: 'source-map',
@@ -18,7 +20,7 @@ const basicConfig = {
   },
   output: {
     filename: 'disco.js',
-    path: path.resolve(__dirname, 'dist')
+    libraryTarget: 'umd',
   }
 }
 
@@ -26,6 +28,9 @@ const webConfig = mergeDeep(
   basicConfig,
   {
     target: 'web',
+    output: {
+      path: path.resolve(__dirname, 'dist/browser')
+    },
     module: {
       rules: [
         {
@@ -53,25 +58,28 @@ const nodeConfig = mergeDeep(
   basicConfig,
   {
     target: 'node',
+    output: {
+      path: path.resolve(__dirname, 'dist/node')
+    },
+    externalsPresets: { node: true },
+    externals: [nodeExternals()], // in order to ignore all modules in node_modules folder, to be used as a backend library
     module: {
       rules: [
         {
           test: /\.ts$/,
           loader: 'ts-loader',
           options: {
-            configFile: path.resolve(__dirname, 'tsconfig.node.json')
+            configFile: 'tsconfig.node.json'
           },
           exclude: [
-            /node_modules/,
-            path.resolve(__dirname, 'src/tfjs/tfjs_web.ts'),
-            path.resolve(__dirname, 'src/msf/data')
+            /node_modules/
           ]
         }
       ]
     },
     resolve: {
       alias: {
-        tfjs$: path.resolve(__dirname, 'src/tfjs/tfjs_node.ts')
+        tfjs: path.resolve(__dirname, 'src/tfjs/tfjs_node.ts')
       }
     }
   }
