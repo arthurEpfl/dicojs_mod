@@ -3,11 +3,11 @@ import * as nodeUrl from 'url'
 import axios from 'axios'
 
 import * as messages from '../../../core/client/federated/messages'
-import { privacy, informant, MetadataID, Centroids, Task, serialization } from '../../../core'
+import { privacy, informant, MetadataID, Task } from '../../../core'
 import { type, clientConnected } from '../../../core/client/messages'
 import { EventConnection, waitMessageWithTimeout, WebSocketServer } from '../../../core/client/event_connection'
 import { MAX_WAIT_PER_ROUND } from '../../../core/client/utils'
-import { antibiogo } from '../../task'
+import { Centroids, antibiogo, serialization } from '../..'
 
 /**
  * Class that deals with communication with the centralized server when training

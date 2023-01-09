@@ -5,7 +5,7 @@ export { GraphInformant, TrainingInformant, informant } from './informant'
 
 export * as client from './client'
 
-export { WeightsContainer, Centroids, aggregation } from './weights'
+export { WeightsContainer, aggregation } from './weights'
 export { AsyncBuffer } from './async_buffer'
 export { AsyncInformant } from './async_informant'
 

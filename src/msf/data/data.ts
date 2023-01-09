@@ -1,6 +1,7 @@
-import { Base64, Pellet } from '../types'
-import { tf } from 'tfjs'
 import { List } from 'immutable'
+
+import { tf } from 'tfjs'
+import { Base64, Pellet } from '../types'
 
 // only supports .jpg
 export function loadPellet (base64: Base64, dimension: [number, number]): Pellet {

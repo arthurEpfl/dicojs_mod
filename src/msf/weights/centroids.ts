@@ -1,4 +1,4 @@
-import { WeightsContainer } from './weights_container'
+import { WeightsContainer } from '../../core/weights/weights_container'
 
 export class Centroids {
   constructor (
