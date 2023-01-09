@@ -34,7 +34,7 @@ Build the project for Node.js
 npm run build:node
 ```
 
-Built files are located in the generated `dist/node/` directort. They are composed of Node.js TypeScript code transpiled to Node.js JavaScript. The lib is meant to be used as a dependency to other Node projects, as it is not bundled. You can do so by adding the following line to your `package.json`
+Built files are located in the generated `dist/node/` directory. They are composed of Node.js TypeScript code transpiled to Node.js JavaScript. The lib is meant to be used as a dependency to other Node projects, as it is not bundled. You can do so by adding the following line to your `package.json`
 
 ```
 file: "/path/to/discojs/"
