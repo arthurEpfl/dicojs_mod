@@ -26,7 +26,6 @@ export class AsyncBuffer<T> {
 
   constructor (
     public readonly taskID: TaskID,
-    private readonly bufferCapacity: number,
     private readonly aggregateAndStoreWeights: (weights: Iterable<T>) => Promise<void>,
     private readonly roundCutoff = 0
   ) {
@@ -38,22 +37,15 @@ export class AsyncBuffer<T> {
     this.observer = observer
   }
 
-  // TODO do not test private
-  bufferIsFull (): boolean {
-    return this.buffer.size >= this.bufferCapacity
-  }
+  public async updateWeights (): Promise<void> {
+    await this.aggregateAndStoreWeights(this.buffer.values())
 
-  private async updateWeightsIfBufferIsFull (): Promise<void> {
-    if (this.bufferIsFull()) {
-      await this.aggregateAndStoreWeights(this.buffer.values())
+    this.round += 1
+    this.observer?.update()
+    this.buffer = Map()
 
-      this.round += 1
-      this.observer?.update()
-      this.buffer = Map()
-
-      console.log('\n************************************************************')
-      console.log(`Buffer is full; Aggregating weights and starting round: ${this.round}\n`)
-    }
+    console.log('\n************************************************************')
+    console.log(`Aggregating weights and starting round: ${this.round}\n`)
   }
 
   // TODO do not test private
@@ -69,7 +61,7 @@ export class AsyncBuffer<T> {
      * @param round
      * @returns true if weights were added, and false otherwise
      */
-  async add (id: string, weights: T, round: number): Promise<boolean> {
+  add (id: string, weights: T, round: number): boolean {
     if (this.isNotWithinRoundCutoff(round)) {
       console.log(`Did not add weights of ${id} to buffer. Due to old round update: ${round}, current round is ${this.round}`)
       return false
@@ -80,7 +72,6 @@ export class AsyncBuffer<T> {
     console.log(`${msg} weights of ${id} to buffer.`)
 
     this.buffer = this.buffer.set(id, weights)
-    await this.updateWeightsIfBufferIsFull()
 
     return true
   }
