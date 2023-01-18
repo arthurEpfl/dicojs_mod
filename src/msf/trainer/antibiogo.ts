@@ -39,13 +39,9 @@ export class Antibiogo {
    * @param pellets Array of base64 pellet images
    * @returns Predictions set for each given pellet
    */
-  public identify (pellets: Base64[], dimensions: Array<[number, number]>): string[][] {
-    if (pellets.length !== dimensions.length) {
-      throw new Error('Length mismatch between inputs')
-    }
-
+  public async identify (pellets: Base64[]): Promise<string[][]> {
     // Load and embed pellets
-    const embeddings = this.backbone.embedPellets(data.loadPellets(pellets, dimensions))
+    const embeddings = this.backbone.embedPellets(await data.loadPellets(pellets))
 
     // Get prediction sets from the prototypical model
     return this.trainer.predict(embeddings)
@@ -56,10 +52,8 @@ export class Antibiogo {
    * @param pellets Array of base64 pellet images
    * @param labels Array of validated labels
    */
-  public fit (samples: Base64[], dimensions: Array<[number, number]>, labels: string[]): void {
+  public async fit (samples: Base64[], labels: string[]): Promise<void> {
     if (
-      samples.length !== dimensions.length ||
-      dimensions.length !== labels.length ||
       labels.length !== samples.length
     ) {
       throw new Error('Length mismatch between inputs')
@@ -68,7 +62,7 @@ export class Antibiogo {
     // Load and embed pellets
     // Note: If the WebView is preserved between calls, then embeddings from
     // "idenfity" can be stored for a later "fit"
-    const embeddings = this.backbone.embedPellets(data.loadPellets(samples, dimensions))
+    const embeddings = this.backbone.embedPellets(await data.loadPellets(samples))
 
     // Train the prototypical model with a labelled dataset
     this.trainer.trainModel(embeddings, labels)
