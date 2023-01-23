@@ -81,7 +81,7 @@ export function fromEntries (entries: List<CentroidEntry>): Centroids {
   )
 }
 
-export function toEntries (centroids: Centroids): List < CentroidEntry > {
+export function toEntries (centroids: Centroids): List <CentroidEntry> {
   return List(centroids.positions.weights).zip(
     List(centroids.radius),
     List(centroids.counts),
