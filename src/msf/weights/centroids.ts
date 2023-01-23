@@ -38,4 +38,31 @@ export class Centroids {
       json.map((e) => e.label)
     )
   }
+
+  static isJson (raw: unknown): raw is CentroidsJson {
+    if (!(
+      typeof raw === 'object' &&
+      raw !== null
+    )) {
+      return false
+    }
+
+    if (!Array.isArray(raw)) {
+      return false
+    }
+
+    if (!raw.every((e) => {
+      const { position, radius, count, label } = e as Record<string, string | number | number[]>
+      return (
+        Array.isArray(position) && position.every((p) => typeof p === 'number') &&
+        typeof radius === 'number' &&
+        typeof count === 'number' &&
+        typeof label === 'string'
+      )
+    })) {
+      return false
+    }
+
+    return true
+  }
 }

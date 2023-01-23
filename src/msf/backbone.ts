@@ -18,11 +18,10 @@ export class Backbone {
     // EfficientNet finetuned in PyTorch and converted to TF.js under the GraphModel format.
     // The model is currently hosted on a Google bucket managed by the MLO lab.
     // TODO: The Antibiogo app should provide the backbone model on download.
-    const defaultModelURL =
-      'https://storage.googleapis.com/deai-313515.appspot.com/models/msf-backbone-model/model.json'
     const model = await tf.loadGraphModel(
-      modelURL ?? defaultModelURL
+      modelURL ?? 'https://storage.googleapis.com/deai-313515.appspot.com/models/msf-backbone-model/model.json'
     )
+
     console.log('memory usage of backbone model:')
     memoryUsage()
     return new this(model)

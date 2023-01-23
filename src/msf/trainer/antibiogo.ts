@@ -1,8 +1,7 @@
 import { Backbone, PrototypicalTrainer, Base64, client as clients, data, antibiogo, Centroids } from '..'
 import { informant as informants } from '../../core'
 import { Config, defaultConfig, isConfig } from '../../config'
-import { CentroidsJson } from '../types'
-import { tf } from 'tfjs'
+import { mergeDeep } from 'immutable'
 
 /**
  * Convenient top-level class.
@@ -15,24 +14,20 @@ export class Antibiogo {
   ) {}
 
   static async init (
-    configObject?: unknown,
-    models?: {
-      backbone?: tf.GraphModel
-      prototypes?: CentroidsJson
-    }
+    configObject?: unknown
   ): Promise<Antibiogo> {
     const config = isConfig(configObject)
-      ? { ...defaultConfig, configObject }
+      ? mergeDeep(defaultConfig, ...Object.entries(configObject))
       : defaultConfig
 
     const client = new clients.AntibiogoClient(config.serverUrl)
     const informant = new informants.FederatedInformant(antibiogo)
 
-    const prototypicalModel = models?.prototypes !== undefined
-      ? Centroids.fromJson(models.prototypes)
+    const prototypicalModel = config.prototypes !== undefined
+      ? Centroids.fromJson(config.prototypes)
       : await client.getLatestModel()
-    const backboneModel = models?.backbone !== undefined
-      ? new Backbone(models.backbone)
+    const backboneModel = config.backbone !== undefined
+      ? new Backbone(config.backbone)
       : await Backbone.init()
 
     const trainer = new PrototypicalTrainer(informant, client, prototypicalModel)
