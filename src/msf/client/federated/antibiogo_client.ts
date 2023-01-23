@@ -7,7 +7,7 @@ import { privacy, informant, MetadataID, Task } from '../../../core'
 import { type, clientConnected } from '../../../core/client/messages'
 import { EventConnection, waitMessageWithTimeout, WebSocketServer } from '../../../core/client/event_connection'
 import { MAX_WAIT_PER_ROUND } from '../../../core/client/utils'
-import { Centroids, antibiogo, serialization } from '../..'
+import { centroids, antibiogo, serialization } from '../..'
 
 /**
  * Class that deals with communication with the centralized server when training
@@ -29,7 +29,7 @@ export class AntibiogoClient {
 
   // Attributes used to wait for a response from the server
   private serverRound?: number
-  private centroids?: Centroids
+  private centroids?: centroids.Centroids
   private receivedStatistics?: Record<string, number>
   private metadataMap?: Map<string, unknown>
 
@@ -89,7 +89,7 @@ export class AntibiogoClient {
   }
 
   // It sends weights to the server
-  async postWeightsToServer (centroids: Centroids): Promise<void> {
+  async postWeightsToServer (centroids: centroids.Centroids): Promise<void> {
     const msg: messages.postWeightsToServer = {
       type: type.postWeightsToServer,
       weights: await serialization.weights.encodeCentroids(centroids),
@@ -117,7 +117,7 @@ export class AntibiogoClient {
   }
 
   // It retrieves the last server round and weights, but return only the server weights
-  async pullRoundAndFetchWeights (): Promise<Centroids | undefined> {
+  async pullRoundAndFetchWeights (): Promise<centroids.Centroids | undefined> {
     // get server round of latest model
     await this.getLatestServerRound()
 
@@ -186,17 +186,17 @@ export class AntibiogoClient {
   }
 
   async onRoundEndCommunication (
-    updatedCentroids: Centroids,
-    staleCentroids: Centroids,
+    updatedCentroids: centroids.Centroids,
+    staleCentroids: centroids.Centroids,
     _: number,
     trainingInformant: informant.FederatedInformant
-  ): Promise<Centroids> {
+  ): Promise<centroids.Centroids> {
     const noisyCentroids = privacy.addDifferentialPrivacy(
       updatedCentroids.positions,
       staleCentroids.positions,
       this.task
     )
-    const payload = new Centroids(
+    const payload = new centroids.Centroids(
       noisyCentroids,
       updatedCentroids.radius,
       updatedCentroids.counts,
@@ -212,7 +212,7 @@ export class AntibiogoClient {
 
   async onTrainEndCommunication (): Promise<void> {}
 
-  async getLatestModel (): Promise<Centroids> {
+  async getLatestModel (): Promise<centroids.Centroids> {
     const url = new URL('', this.url.href)
     if (!url.pathname.endsWith('/')) {
       url.pathname += '/'

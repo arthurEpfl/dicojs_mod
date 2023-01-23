@@ -2,7 +2,7 @@ import * as msgpack from 'msgpack-lite'
 
 import { tf } from 'tfjs'
 import { WeightsContainer, serialization } from '../../core'
-import { Centroids } from '..'
+import { centroids } from '..'
 
 export class SerializedCentroids {
   constructor (
@@ -29,7 +29,7 @@ export class SerializedCentroids {
   }
 }
 
-export async function encodeCentroids (centroids: Centroids): Promise<serialization.weights.Encoded> {
+export async function encodeCentroids (centroids: centroids.Centroids): Promise<serialization.weights.Encoded> {
   const serialized: serialization.weights.Serialized[] = await Promise.all(centroids.positions.weights.map(async (t) => {
     return {
       shape: t.shape as number[],
@@ -47,7 +47,7 @@ export async function encodeCentroids (centroids: Centroids): Promise<serializat
   return [...msgpack.encode(payload).values()]
 }
 
-export function decodeCentroids (encoded: serialization.weights.Encoded): Centroids {
+export function decodeCentroids (encoded: serialization.weights.Encoded): centroids.Centroids {
   const raw = msgpack.decode(encoded)
 
   const rawPositions = raw._positions
@@ -60,7 +60,7 @@ export function decodeCentroids (encoded: serialization.weights.Encoded): Centro
     rawPositions.map((w) => tf.tensor(w.data, w.shape))
   )
 
-  return new Centroids(
+  return new centroids.Centroids(
     positions,
     raw._radius,
     raw._counts,

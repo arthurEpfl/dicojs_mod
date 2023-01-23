@@ -1,5 +1,4 @@
-import { Centroids } from './msf'
-import { CentroidsJson } from './msf/types'
+import { centroids } from './msf'
 import { tf } from 'tfjs'
 
 export class Config {
@@ -10,7 +9,7 @@ export class Config {
     url: string,
     port: number,
     public readonly backbone?: tf.GraphModel,
-    public readonly prototypes?: CentroidsJson
+    public readonly prototypes?: centroids.CentroidsJson
   ) {
     this.serverUrl = new URL(`${protocol}://${url}:${port}`)
   }
@@ -24,14 +23,14 @@ export function isConfig (raw: unknown): raw is Config {
     return false
   }
 
-  const { protocol, url, port, backbone, prototypes } = raw as Record<string, undefined | string | number | tf.GraphModel | CentroidsJson>
+  const { protocol, url, port, backbone, prototypes } = raw as Record<string, undefined | string | number | tf.GraphModel | centroids.CentroidsJson>
 
   return (
     (protocol === undefined || typeof protocol === 'string') &&
     (url === undefined || typeof url === 'string') &&
     (port === undefined || typeof port === 'number') &&
     (backbone === undefined || backbone instanceof tf.GraphModel) &&
-    (prototypes === undefined || Centroids.isJson(prototypes))
+    (prototypes === undefined || centroids.isJson(prototypes))
   )
 }
 

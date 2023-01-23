@@ -1,5 +1,10 @@
+import { List } from 'immutable'
 import { WeightsContainer } from '../../core/weights/weights_container'
-import { CentroidsJson } from '../types'
+import { tf } from 'tfjs'
+
+export type CentroidsJson = Array<{ position: number[], label: string, radius: number, count: number }>
+
+export type CentroidEntry = [tf.Tensor, number, number, string]
 
 export class Centroids {
   constructor (
@@ -29,40 +34,57 @@ export class Centroids {
   get labels (): string[] {
     return this._labels
   }
+}
 
-  static fromJson (json: CentroidsJson): Centroids {
-    return new Centroids(
-      new WeightsContainer(json.map((e) => e.position)),
-      json.map((e) => e.radius),
-      json.map((e) => e.count),
-      json.map((e) => e.label)
+export function fromJson (json: CentroidsJson): Centroids {
+  return new Centroids(
+    new WeightsContainer(json.map((e) => e.position)),
+    json.map((e) => e.radius),
+    json.map((e) => e.count),
+    json.map((e) => e.label)
+  )
+}
+
+export function isJson (raw: unknown): raw is CentroidsJson {
+  if (!(
+    typeof raw === 'object' &&
+    raw !== null
+  )) {
+    return false
+  }
+
+  if (!Array.isArray(raw)) {
+    return false
+  }
+
+  if (!raw.every((e) => {
+    const { position, radius, count, label } = e as Record<string, string | number | number[]>
+    return (
+      Array.isArray(position) && position.every((p) => typeof p === 'number') &&
+      typeof radius === 'number' &&
+      typeof count === 'number' &&
+      typeof label === 'string'
     )
+  })) {
+    return false
   }
 
-  static isJson (raw: unknown): raw is CentroidsJson {
-    if (!(
-      typeof raw === 'object' &&
-      raw !== null
-    )) {
-      return false
-    }
+  return true
+}
 
-    if (!Array.isArray(raw)) {
-      return false
-    }
+export function fromEntries (entries: List<CentroidEntry>): Centroids {
+  return new Centroids(
+    new WeightsContainer(entries.map((e) => e[0])),
+    entries.map((e) => e[1]).toArray(),
+    entries.map((e) => e[2]).toArray(),
+    entries.map((e) => e[3]).toArray()
+  )
+}
 
-    if (!raw.every((e) => {
-      const { position, radius, count, label } = e as Record<string, string | number | number[]>
-      return (
-        Array.isArray(position) && position.every((p) => typeof p === 'number') &&
-        typeof radius === 'number' &&
-        typeof count === 'number' &&
-        typeof label === 'string'
-      )
-    })) {
-      return false
-    }
-
-    return true
-  }
+export function toEntries (centroids: Centroids): List < CentroidEntry > {
+  return List(centroids.positions.weights).zip(
+    List(centroids.radius),
+    List(centroids.counts),
+    List(centroids.labels)
+  ) as List<CentroidEntry>
 }

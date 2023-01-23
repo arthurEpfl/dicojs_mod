@@ -2,14 +2,14 @@ import { List, Map } from 'immutable'
 
 import { tf } from 'tfjs'
 import { informant, WeightsContainer } from '../../core'
-import { client as clients, Centroids } from '..'
+import { client as clients, centroids } from '..'
 
 export class PrototypicalTrainer {
   constructor (
     public readonly trainingInformant: informant.FederatedInformant,
     private readonly client: clients.AntibiogoClient,
     // Do we want the Antibiogo app to provide starting prototypes on download?
-    public prototypes: Centroids,
+    public prototypes: centroids.Centroids,
     private readonly radiusCoefficient: number = 2
   ) {
 
@@ -101,7 +101,7 @@ export class PrototypicalTrainer {
     const newRadiuses = newCentroids.map(([p, c, radius]) => radius)
     const newCounts = newCentroids.map(([p, count, r]) => count)
 
-    this.prototypes = new Centroids(
+    this.prototypes = new centroids.Centroids(
       new WeightsContainer(updatedPositions.concat(newPositions)),
       this.prototypes.radius.concat(newRadiuses.toArray()),
       updatedCounts.concat(newCounts).toArray(),

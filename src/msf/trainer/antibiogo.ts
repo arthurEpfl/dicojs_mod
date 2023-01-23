@@ -1,4 +1,4 @@
-import { Backbone, PrototypicalTrainer, Base64, client as clients, data, antibiogo, Centroids } from '..'
+import { Backbone, PrototypicalTrainer, Base64, client as clients, data, antibiogo, centroids } from '..'
 import { informant as informants } from '../../core'
 import { Config, defaultConfig, isConfig } from '../../config'
 import { mergeDeep } from 'immutable'
@@ -24,7 +24,7 @@ export class Antibiogo {
     const informant = new informants.FederatedInformant(antibiogo)
 
     const prototypicalModel = config.prototypes !== undefined
-      ? Centroids.fromJson(config.prototypes)
+      ? centroids.fromJson(config.prototypes)
       : await client.getLatestModel()
     const backboneModel = config.backbone !== undefined
       ? new Backbone(config.backbone)
