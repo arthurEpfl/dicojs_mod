@@ -1,6 +1,6 @@
 import { List } from 'immutable'
 
-import { aggregation } from 'src/core'
+import { aggregation } from '../../core'
 import { Centroids, CentroidEntry, fromEntries, toEntries } from './centroids'
 
 export function aggregateCentroids (
