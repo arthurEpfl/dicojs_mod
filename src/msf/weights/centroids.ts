@@ -1,4 +1,5 @@
 import { WeightsContainer } from '../../core/weights/weights_container'
+import { CentroidsJson } from '../types'
 
 export class Centroids {
   constructor (
@@ -27,5 +28,14 @@ export class Centroids {
 
   get labels (): string[] {
     return this._labels
+  }
+
+  static fromJson (json: CentroidsJson): Centroids {
+    return new Centroids(
+      new WeightsContainer(json.map((e) => e.position)),
+      json.map((e) => e.radius),
+      json.map((e) => e.count),
+      json.map((e) => e.label)
+    )
   }
 }

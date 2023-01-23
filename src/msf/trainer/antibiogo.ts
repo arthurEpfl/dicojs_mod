@@ -1,6 +1,8 @@
-import { Backbone, PrototypicalTrainer, Base64, client as clients, data, antibiogo } from '..'
+import { Backbone, PrototypicalTrainer, Base64, client as clients, data, antibiogo, Centroids } from '..'
 import { informant as informants } from '../../core'
 import { Config, defaultConfig, isConfig } from '../../config'
+import { CentroidsJson } from '../types'
+import { tf } from 'tfjs'
 
 /**
  * Convenient top-level class.
@@ -12,7 +14,13 @@ export class Antibiogo {
     public readonly config: Config
   ) {}
 
-  static async init (configObject?: unknown): Promise<Antibiogo> {
+  static async init (
+    configObject?: unknown,
+    models?: {
+      backbone?: tf.GraphModel
+      prototypes?: CentroidsJson
+    }
+  ): Promise<Antibiogo> {
     const config = isConfig(configObject)
       ? { ...defaultConfig, configObject }
       : defaultConfig
@@ -20,7 +28,12 @@ export class Antibiogo {
     const client = new clients.AntibiogoClient(config.serverUrl)
     const informant = new informants.FederatedInformant(antibiogo)
 
-    const prototypicalModel = await client.getLatestModel()
+    const prototypicalModel = models?.prototypes !== undefined
+      ? Centroids.fromJson(models.prototypes)
+      : await client.getLatestModel()
+    const backboneModel = models?.backbone !== undefined
+      ? new Backbone(models.backbone)
+      : await Backbone.init()
 
     const trainer = new PrototypicalTrainer(informant, client, prototypicalModel)
 
@@ -28,7 +41,7 @@ export class Antibiogo {
 
     return new this(
       trainer,
-      await Backbone.init(),
+      backboneModel,
       config
     )
   }

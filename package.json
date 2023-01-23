@@ -5,6 +5,7 @@
   "main": "./dist/node/disco.js",
   "types": "./dist/node/index.d.ts",
   "scripts": {
+    "build": "npm run build:node && npm run build:web",
     "build:node": "rm -rf dist/node && webpack --config-name node-dev",
     "build:web": "rm -rf dist/browser && webpack --config-name web-dev",
     "prod:node": "rm -rf dist/node && webpack --config-name node-prod",

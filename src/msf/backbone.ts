@@ -10,7 +10,7 @@ function memoryUsage (): void {
  * Converts a base64 string to an image tensor and embeds the image into some vector space.
  */
 export class Backbone {
-  private constructor (
+  constructor (
     private readonly model: tf.GraphModel
   ) {}
 
@@ -30,6 +30,6 @@ export class Backbone {
 
   embedPellets (pellets: Pellet[]): Embedding[] {
     const raw = this.model.predict(tf.stack(pellets)) as tf.Tensor2D
-    return (raw.arraySync()).map((e) => tf.tensor(e))
+    return (raw.arraySync() as number[][]).map((e) => tf.tensor(e))
   }
 }
