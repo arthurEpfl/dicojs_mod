@@ -1,8 +1,8 @@
-import { mergeDeep } from 'immutable'
+import { merge } from 'immutable'
 
 import { informant as informants } from '../../core'
 import { Backbone, PrototypicalTrainer, Base64, client as clients, data, antibiogo, centroids } from '..'
-import { Config, defaultConfig, isConfig } from '../../config'
+import { Config, defaultConfig } from '../../config'
 
 /**
  * Convenient top-level class.
@@ -16,13 +16,15 @@ export class Antibiogo {
   ) {}
 
   static async init (
-    configObject?: unknown
+    configObject?: Config
   ): Promise<Antibiogo> {
-    const config = isConfig(configObject)
-      ? mergeDeep(defaultConfig, ...Object.entries(configObject))
+    const config = configObject !== undefined
+      ? merge(defaultConfig, { ...configObject })
       : defaultConfig
 
-    const client = new clients.AntibiogoClient(config.serverUrl)
+    const serverUrl = new URL(`${config.protocol}://${config.hostname}:${config.port}`)
+
+    const client = new clients.AntibiogoClient(serverUrl)
     const informant = new informants.FederatedInformant(antibiogo)
 
     let connected = true
@@ -33,11 +35,11 @@ export class Antibiogo {
       connected = false
     }
 
+    const backboneModel = await Backbone.init()
     let prototypicalModel: centroids.Centroids
-    let backboneModel: Backbone
 
-    if (!connected && (config.prototypes === undefined || config.backbone === undefined)) {
-      throw new TypeError('unable to initializae models')
+    if (!connected && (config.prototypes === undefined)) {
+      throw new TypeError('unable to initialize prototypical model')
     }
 
     if (connected && config.prototypes === undefined) {
@@ -45,13 +47,6 @@ export class Antibiogo {
     } else {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       prototypicalModel = centroids.fromJson(config.prototypes!)
-    }
-
-    if (connected && config.backbone === undefined) {
-      backboneModel = await Backbone.init()
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      backboneModel = new Backbone(config.backbone!)
     }
 
     const trainer = new PrototypicalTrainer(informant, client, prototypicalModel)
