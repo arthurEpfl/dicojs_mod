@@ -29,7 +29,7 @@ export class Antibiogo {
     try {
       await client.connect()
     } catch (e) {
-      console.error('Could not connect to server. Client will work in offline mode.')
+      console.warn('Could not connect to server. Client will work in offline mode.')
       connected = false
     }
 
