@@ -223,4 +223,8 @@ export class AntibiogoClient {
 
     return serialization.weights.decodeCentroids(response.data)
   }
+
+  get isConnected (): boolean {
+    return this.connected
+  }
 }

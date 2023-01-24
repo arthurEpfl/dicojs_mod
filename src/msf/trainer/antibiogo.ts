@@ -1,13 +1,15 @@
-import { Backbone, PrototypicalTrainer, Base64, client as clients, data, antibiogo, centroids } from '..'
-import { informant as informants } from '../../core'
-import { Config, defaultConfig, isConfig } from '../../config'
 import { mergeDeep } from 'immutable'
+
+import { informant as informants } from '../../core'
+import { Backbone, PrototypicalTrainer, Base64, client as clients, data, antibiogo, centroids } from '..'
+import { Config, defaultConfig, isConfig } from '../../config'
 
 /**
  * Convenient top-level class.
  */
 export class Antibiogo {
   private constructor (
+    private readonly client: clients.AntibiogoClient,
     public readonly trainer: PrototypicalTrainer,
     private readonly backbone: Backbone,
     public readonly config: Config
@@ -23,18 +25,39 @@ export class Antibiogo {
     const client = new clients.AntibiogoClient(config.serverUrl)
     const informant = new informants.FederatedInformant(antibiogo)
 
-    const prototypicalModel = config.prototypes !== undefined
-      ? centroids.fromJson(config.prototypes)
-      : await client.getLatestModel()
-    const backboneModel = config.backbone !== undefined
-      ? new Backbone(config.backbone)
-      : await Backbone.init()
+    let connected = true
+    try {
+      await client.connect()
+    } catch (e) {
+      console.error('Could not connect to server. Client will work in offline mode.')
+      connected = false
+    }
+
+    let prototypicalModel: centroids.Centroids
+    let backboneModel: Backbone
+
+    if (!connected && (config.prototypes === undefined || config.backbone === undefined)) {
+      throw new TypeError('unable to initializae models')
+    }
+
+    if (connected && config.prototypes === undefined) {
+      prototypicalModel = await client.getLatestModel()
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      prototypicalModel = centroids.fromJson(config.prototypes!)
+    }
+
+    if (connected && config.backbone === undefined) {
+      backboneModel = await Backbone.init()
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      backboneModel = new Backbone(config.backbone!)
+    }
 
     const trainer = new PrototypicalTrainer(informant, client, prototypicalModel)
 
-    await client.connect()
-
     return new this(
+      client,
       trainer,
       backboneModel,
       config
@@ -80,6 +103,14 @@ export class Antibiogo {
    * Send local prototypes to the server for aggregation.
    */
   async communicate (): Promise<void> {
+    if (!this.client.isConnected) {
+      try {
+        await this.client.connect()
+      } catch (e) {
+        console.error('Could not communicate the local prototypes: unable to connect to the remote server.')
+        return
+      }
+    }
     await this.trainer.communicatePrototypes()
   }
 }
