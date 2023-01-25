@@ -45,6 +45,18 @@ export function fromJson (json: CentroidsJson): Centroids {
   )
 }
 
+export function toJson (centroids: Centroids): CentroidsJson {
+  const entries = toEntries(centroids)
+  return entries.map(([position,  radius,  count,  label]) => {
+    return {
+      position: position.arraySync() as number[],
+      radius,
+      count,
+      label
+    }
+  }).toArray()
+}
+
 export function isJson (raw: unknown): raw is CentroidsJson {
   if (!(
     typeof raw === 'object' &&

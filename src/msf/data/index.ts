@@ -1,1 +1,1 @@
-export { loadPellet, loadPellets } from './data'
+export { loadEmbedding,  loadEmbeddings } from './data'

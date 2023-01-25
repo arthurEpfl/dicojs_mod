@@ -30,16 +30,17 @@
         console.log("fitting on labelled pellets...")
         const countsBefore = antibiogo.trainer.prototypes.counts
 
-        antibiogo.fit(samples, predictions.map((e, idx) => e.length ? e[0] : `New label #${idx}`)).then(() => {
+        // TODO: return them to kotlin
+        const updatedPrototypes = antibiogo.fit(samples, predictions.map((e, idx) => e.length ? e[0] : `New label #${idx}`)).then(() => {
             console.log(
                 "counts per label:\nbefore:",
                 countsBefore,
                 "\nafter:",
                 antibiogo.trainer.prototypes.counts
             )
-            // antibiogo.communicate().catch(console.error)
         })
 
+        antibiogo.communicate(updatedPrototypes).catch(console.error)
         
         })
     }).catch(console.error)

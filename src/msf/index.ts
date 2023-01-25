@@ -1,5 +1,4 @@
-export { Backbone } from './backbone'
-export { Pellet, Base64 } from './types'
+export { Embedding, Base64 } from './types'
 export { antibiogo } from './task'
 
 export * as centroids from './weights'

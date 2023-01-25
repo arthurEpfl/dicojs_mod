@@ -2,14 +2,13 @@ import { List, Map } from 'immutable'
 
 import { tf } from 'tfjs'
 import { informant, WeightsContainer } from '../../core'
-import { client as clients, centroids } from '..'
+import { centroids } from '..'
 
 export class PrototypicalTrainer {
   constructor (
     public readonly trainingInformant: informant.FederatedInformant,
-    private readonly client: clients.AntibiogoClient,
     // Do we want the Antibiogo app to provide starting prototypes on download?
-    public prototypes: centroids.Centroids,
+    private _prototypes: centroids.Centroids,
     private readonly radiusCoefficient: number = 2
   ) {
 
@@ -21,14 +20,14 @@ export class PrototypicalTrainer {
    */
   predict (dataset: tf.Tensor1D[]): string[][] {
     return dataset.map((tensor) =>
-      this.prototypes.positions.weights
+      this._prototypes.positions.weights
         .map((centroid, idx) =>
           [
             centroid.sub(tensor).norm(2).dataSync()[0],
-            this.prototypes.labels[idx]
+            this._prototypes.labels[idx]
           ] as [number, string])
         .filter(([distance, _], idx) =>
-          distance <= this.prototypes.radius[idx])
+          distance <= this._prototypes.radius[idx])
         .map(([_, label]) => label))
   }
 
@@ -46,13 +45,13 @@ export class PrototypicalTrainer {
 
     // New labels entered by the user
     const newLabels = List(labels)
-      .filter((label) => !this.prototypes.labels.includes(label))
+      .filter((label) => !this._prototypes.labels.includes(label))
 
     // Update local prototypes
-    const updatedCentroids = List(this.prototypes.positions.weights)
-      .zip(List(this.prototypes.counts))
+    const updatedCentroids = List(this._prototypes.positions.weights)
+      .zip(List(this._prototypes.counts))
       .map(([centroid, count], idx) => {
-        const label = this.prototypes.labels[idx]
+        const label = this._prototypes.labels[idx]
         if (label === undefined) {
           throw new Error(`Centroid ${idx} does not have a label`)
         }
@@ -74,9 +73,9 @@ export class PrototypicalTrainer {
         ] as [tf.Tensor, number]
       })
     const updatedPositions = updatedCentroids
-      .map(([position, _], idx) => position ?? this.prototypes.positions.get(idx)) as List<tf.Tensor>
+      .map(([position, _], idx) => position ?? this._prototypes.positions.get(idx)) as List<tf.Tensor>
     const updatedCounts = updatedCentroids
-      .map(([_, count], idx) => count ?? this.prototypes.counts[idx])
+      .map(([_, count], idx) => count ?? this._prototypes.counts[idx])
 
     // Add prototypes for new labels
     const newCentroids = newLabels
@@ -101,20 +100,15 @@ export class PrototypicalTrainer {
     const newRadiuses = newCentroids.map(([p, c, radius]) => radius)
     const newCounts = newCentroids.map(([p, count, r]) => count)
 
-    this.prototypes = new centroids.Centroids(
+    this._prototypes = new centroids.Centroids(
       new WeightsContainer(updatedPositions.concat(newPositions)),
-      this.prototypes.radius.concat(newRadiuses.toArray()),
+      this._prototypes.radius.concat(newRadiuses.toArray()),
       updatedCounts.concat(newCounts).toArray(),
-      this.prototypes.labels.concat(newLabels.toArray())
+      this._prototypes.labels.concat(newLabels.toArray())
     )
   }
 
-  async communicatePrototypes (): Promise<void> {
-    await this.client.onRoundEndCommunication(
-      this.prototypes,
-      this.prototypes,
-      0,
-      this.trainingInformant
-    )
+  get prototypes (): centroids.Centroids {
+    return this._prototypes
   }
 }

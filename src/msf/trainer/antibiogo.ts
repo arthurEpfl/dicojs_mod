@@ -1,7 +1,7 @@
 import { merge } from 'immutable'
 
 import { informant as informants } from '../../core'
-import { Backbone, PrototypicalTrainer, Base64, client as clients, data, antibiogo, centroids } from '..'
+import { PrototypicalTrainer, Base64, client as clients, data, antibiogo, centroids } from '..'
 import { Config, defaultConfig } from '../../config'
 
 /**
@@ -11,7 +11,6 @@ export class Antibiogo {
   private constructor (
     private readonly client: clients.AntibiogoClient,
     public readonly trainer: PrototypicalTrainer,
-    private readonly backbone: Backbone,
     public readonly config: Config
   ) {}
 
@@ -35,7 +34,6 @@ export class Antibiogo {
       connected = false
     }
 
-    const backboneModel = await Backbone.init()
     let prototypicalModel: centroids.Centroids
 
     if (!connected && (config.prototypes === undefined)) {
@@ -49,14 +47,9 @@ export class Antibiogo {
       prototypicalModel = centroids.fromJson(config.prototypes!)
     }
 
-    const trainer = new PrototypicalTrainer(informant, client, prototypicalModel)
+    const trainer = new PrototypicalTrainer(informant, prototypicalModel)
 
-    return new this(
-      client,
-      trainer,
-      backboneModel,
-      config
-    )
+    return new this(client, trainer, config)
   }
 
   /**
@@ -65,12 +58,9 @@ export class Antibiogo {
    * @param pellets Array of base64 pellet images
    * @returns Predictions set for each given pellet
    */
-  public async identify (pellets: Base64[]): Promise<string[][]> {
-    // Load and embed pellets
-    const embeddings = this.backbone.embedPellets(await data.loadPellets(pellets))
-
-    // Get prediction sets from the prototypical model
-    return this.trainer.predict(embeddings)
+  public identify (embeddings: Base64[]): string[][] {
+    const dataset = data.loadEmbeddings(embeddings)
+    return this.trainer.predict(dataset.toArray())
   }
 
   /**
@@ -78,20 +68,15 @@ export class Antibiogo {
    * @param pellets Array of base64 pellet images
    * @param labels Array of validated labels
    */
-  public async fit (samples: Base64[], labels: string[]): Promise<void> {
-    if (
-      labels.length !== samples.length
-    ) {
+  public fit (embeddings: Base64[], labels: string[]): centroids.CentroidsJson {
+    if (labels.length !== embeddings.length) {
       throw new Error('Length mismatch between inputs')
     }
 
-    // Load and embed pellets
-    // Note: If the WebView is preserved between calls, then embeddings from
-    // "idenfity" can be stored for a later "fit"
-    const embeddings = this.backbone.embedPellets(await data.loadPellets(samples))
+    const dataset = data.loadEmbeddings(embeddings)
+    this.trainer.trainModel(dataset.toArray(), labels)
 
-    // Train the prototypical model with a labelled dataset
-    this.trainer.trainModel(embeddings, labels)
+    return centroids.toJson(this.trainer.prototypes)
   }
 
   /**
@@ -106,6 +91,12 @@ export class Antibiogo {
         return
       }
     }
-    await this.trainer.communicatePrototypes()
+
+    await this.client.onRoundEndCommunication(
+      this.trainer.prototypes,
+      this.trainer.prototypes,
+      0,
+      this.trainer.trainingInformant
+    )
   }
 }
