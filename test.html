@@ -20,30 +20,28 @@
 
         document.getElementById("samples").innerHTML = samples.map((sample) => `<img src="data:image/jpg;base64,${sample}">`).join(" ")
 
-        antibiogo.identify(samples).then(predictions => {
-            console.log("predictions:", predictions)
+        const predictions = antibiogo.identify(samples)
+        console.log("predictions:", predictions)
 
-            document.getElementById("results").innerText = predictions
-                .map((e) => e.length ? e : 'New label')
-                .join("\n")
+        document.getElementById("results").innerText = predictions
+            .map((e) => e.length ? e : 'New label')
+            .join("\n")
 
         console.log("fitting on labelled pellets...")
         const countsBefore = antibiogo.trainer.prototypes.counts
 
         // TODO: return them to kotlin
-        const updatedPrototypes = antibiogo.fit(samples, predictions.map((e, idx) => e.length ? e[0] : `New label #${idx}`)).then(() => {
-            console.log(
-                "counts per label:\nbefore:",
-                countsBefore,
-                "\nafter:",
-                antibiogo.trainer.prototypes.counts
-            )
-        })
+        const updatedPrototypes = antibiogo.fit(samples, predictions.map((e, idx) => e.length ? e[0] : `New label #${idx}`))
+        console.log(
+            "counts per label:\nbefore:",
+            countsBefore,
+            "\nafter:",
+            antibiogo.trainer.prototypes.counts
+        )
 
         antibiogo.communicate(updatedPrototypes).catch(console.error)
         
         })
-    }).catch(console.error)
 
     </script>
 </html>
