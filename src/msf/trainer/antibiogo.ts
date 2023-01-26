@@ -1,7 +1,7 @@
 import { merge } from 'immutable'
 
 import { informant as informants } from '../../core'
-import { PrototypicalTrainer, Base64, client as clients, data, antibiogo, centroids } from '..'
+import { PrototypicalTrainer, client as clients, data, antibiogo, centroids } from '..'
 import { Config, defaultConfig } from '../../config'
 
 /**
@@ -58,7 +58,7 @@ export class Antibiogo {
    * @param pellets Array of base64 pellet images
    * @returns Predictions set for each given pellet
    */
-  public identify (embeddings: Base64[]): string[][] {
+  public identify (embeddings: string): string[][] {
     const dataset = data.loadEmbeddings(embeddings)
     return this.trainer.predict(dataset.toArray())
   }
@@ -68,7 +68,7 @@ export class Antibiogo {
    * @param pellets Array of base64 pellet images
    * @param labels Array of validated labels
    */
-  public fit (embeddings: Base64[], labels: string[]): centroids.CentroidsJson {
+  public fit (embeddings: string, labels: string[]): centroids.CentroidsJson {
     if (labels.length !== embeddings.length) {
       throw new Error('Length mismatch between inputs')
     }

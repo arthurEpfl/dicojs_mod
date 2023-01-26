@@ -1,4 +1,4 @@
-export { Embedding, Base64 } from './types'
+export { Embedding } from './types'
 export { antibiogo } from './task'
 
 export * as centroids from './weights'

@@ -1,1 +1,1 @@
-export { loadEmbedding,  loadEmbeddings } from './data'
+export { loadEmbeddings } from './data'
