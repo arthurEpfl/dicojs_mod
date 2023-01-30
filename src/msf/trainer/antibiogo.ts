@@ -69,11 +69,12 @@ export class Antibiogo {
    * @param labels Array of validated labels
    */
   public fit (embeddings: string, labels: string[]): centroids.CentroidsJson {
-    if (labels.length !== embeddings.length) {
-      throw new Error('Length mismatch between inputs')
+    const dataset = data.loadEmbeddings(embeddings)
+
+    if (labels.length !== dataset.size) {
+      throw new Error('length mismatch between samples and labels')
     }
 
-    const dataset = data.loadEmbeddings(embeddings)
     this.trainer.trainModel(dataset.toArray(), labels)
 
     return centroids.toJson(this.trainer.prototypes)
