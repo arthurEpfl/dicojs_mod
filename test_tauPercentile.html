@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Page</title>
+</head>
+<body>
+  <h1>Test Page</h1>
+  <script type="text/javascript" src="dist/browser/disco.js"></script>
+  <script type="text/javascript">
+    const currentCentroids = {
+      positions: {
+        weights: [
+          { shape: [3], positions: [10, 10, 10] },
+          { shape: [3], positions: [0, 0, 0] },
+          { shape: [3], positions: [5, 5, 5] }
+        ]
+      },
+      radius: [10, 9, 8],
+      counts: [803, 162, 441],
+      labels: ["AK 30", "AMC 30", "AMP 10"]
+    };
+
+    const contributions = [
+      {
+        positions: {
+          weights: [
+            { shape: [3], positions: [10, 10, 10] },
+            { shape: [3], positions: [0, 0, 0] },
+            { shape: [3], positions: [3, 4, 4] }
+          ]
+        },
+        radius: [10, 9, 8],
+        counts: [803, 162, 442],
+        labels: ["AK 30", "AMC 30", "AMP 10"]
+      }
+    ];
+
+    
+    const tauPercentile = 0.5;
+
+    // Assuming msf.centroids.aggregateCentroids is available in disco.js
+    try {
+      // const result = msf.centroids.aggregateCentroids(currentCentroids, contributions, tauPercentile);
+      const result = msf.centroids.aggregateCentroids();
+      console.log('Aggregation result:', result);
+    } catch (error) {
+      console.error('Error during aggregation:', error);
+    }
+  </script>
+</body>
+</html>

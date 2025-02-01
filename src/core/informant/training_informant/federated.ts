@@ -1,4 +1,4 @@
-import { Base } from '.'
+import { Base } from './base.js'
 
 /**
  * Class that collects information about the status of the training-loop of the model.
@@ -18,7 +18,7 @@ export class FederatedInformant extends Base {
     this.averageNumberOfParticipants = receivedStatistics.averageNumberOfParticipants
   }
 
-  isFederated (): boolean {
+  override isFederated (): boolean {
     return true
   }
 }

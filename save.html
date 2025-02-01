@@ -1,14 +1,13 @@
 import { List, Map } from 'immutable'
 import * as tf from '@tensorflow/tfjs'
-import { WeightsContainer } from '../../core/weights/weights_container.js'
-import { informant } from '../../core/informant/index.js'
-import { Centroids } from '../weights/centroids.js'
+import { informant, WeightsContainer } from '../../core'
+import { centroids } from '..'
 
 export class PrototypicalTrainer {
   constructor (
     public readonly trainingInformant: informant.FederatedInformant,
     // Do we want the Antibiogo app to provide starting prototypes on download?
-    private _prototypes: Centroids,
+    private _prototypes: centroids.Centroids,
     private readonly radiusCoefficient: number = 2
   ) {
 
@@ -121,7 +120,7 @@ export class PrototypicalTrainer {
     console.log(`New radiuses: ${newRadiuses}`)
     console.log(`New counts: ${newCounts}`)
 
-    this._prototypes = new Centroids(
+    this._prototypes = new centroids.Centroids(
       new WeightsContainer(updatedPositions.concat(newPositions)),
       this._prototypes.radius.concat(newRadiuses.toArray()),
       updatedCounts.concat(newCounts).toArray(),
@@ -129,8 +128,7 @@ export class PrototypicalTrainer {
     )
   }
 
-  get prototypes (): Centroids {
+  get prototypes (): centroids.Centroids {
     return this._prototypes
   }
 }
-

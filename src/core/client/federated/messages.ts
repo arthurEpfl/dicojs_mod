@@ -1,7 +1,8 @@
-import { MetadataID } from '../..'
-import { weights } from '../../serialization'
+// import { MetadataID } from '../../types.js'
+// Warning for this one as well, takes weights from index.js "taken from elsewhere"
+import { weights } from '../../serialization/index.js'
 
-import { type, hasMessageType } from '../messages'
+import { type, hasMessageType } from '../messages.js'
 
 export type MessageFederated =
   postWeightsToServer |
@@ -42,7 +43,7 @@ export interface getMetadataMap {
   clientId: string
   taskId: string
   round: number
-  metadataId: MetadataID
+  metadataId: string
   metadataMap?: Array<[string, string | undefined]>
 }
 

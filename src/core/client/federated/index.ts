@@ -1,1 +1,1 @@
-export * as messages from './messages'
+export * as messages from './messages.js'

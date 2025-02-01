@@ -1,9 +1,9 @@
-export { Embedding } from './types'
-export { antibiogo } from './task'
+export { Embedding } from './types.js'
+export { antibiogo } from './task.js'
 
-export * as centroids from './weights'
-export * as client from './client'
-export * as data from './data'
-export * as serialization from './serialization'
+export * as centroids from './weights/index.js'
+export * as client from './client/index.js'
+export * as data from './data/index.js'
+export * as serialization from './serialization/index.js'
 
-export * from './trainer'
+export * from './trainer/index.js'

@@ -1,5 +1,7 @@
-<html>
+<!-- <html>
     <script type="text/javascript" src="dist/browser/disco.js"></script>
+    <script type="text/javascript" src="dist/msf/trainer/trainer.js"></script>
+    <script type="text/javascript" src="dist/msf/trainer/antibiogo.js"></script>
     <script>
 
     Antibiogo.init().then((antibiogo) => {
@@ -20,9 +22,35 @@
             antibiogo.trainer.prototypes.counts
         )
 
+        console.log(updatedPrototypes)
+
         antibiogo.communicate(updatedPrototypes).catch(console.error)
         
         })
 
     </script>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antibiogo Test</title>
+  </head>
+  <body>
+    <script type="module">
+      import Antibiogo from './dist/msf/trainer/antibiogo.js';
+
+      Antibiogo.init().then((antibiogo) => {
+        console.log('Initialized Antibiogo:', antibiogo);
+
+        const embeddings = '[[...]]'; // Example embeddings
+        const predictions = antibiogo.identify(embeddings);
+        console.log('Predictions:', predictions);
+
+        antibiogo.communicate(predictions).catch(console.error);
+      });
+    </script>
+  </body>
 </html>

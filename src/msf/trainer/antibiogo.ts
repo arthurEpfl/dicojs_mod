@@ -1,15 +1,19 @@
 import { merge } from 'immutable'
 
-import { informant as informants } from '../../core'
-import { PrototypicalTrainer, client as clients, data, antibiogo, centroids } from '..'
-import { Config, defaultConfig } from '../../config'
+import { informant as informants } from '../../core/informant/index.js'
+import { PrototypicalTrainer } from './trainer.js'
+import { AntibiogoClient } from '../client/federated/antibiogo_client.js'
+import { loadEmbeddings } from '../data/data.js'
+import { antibiogo } from '../task.js'
+import { Centroids, CentroidsJson, fromJson, toJson } from '../weights/centroids.js'
+import { Config, defaultConfig } from '../../config.js'
 
 /**
  * Convenient top-level class.
  */
 export class Antibiogo {
   private constructor (
-    private readonly client: clients.AntibiogoClient,
+    private readonly client: AntibiogoClient,
     public readonly trainer: PrototypicalTrainer,
     public readonly config: Config
   ) {}
@@ -23,7 +27,7 @@ export class Antibiogo {
 
     const serverUrl = new URL(`${config.protocol}://${config.hostname}:${config.port}`)
 
-    const client = new clients.AntibiogoClient(serverUrl)
+    const client = new AntibiogoClient(serverUrl)
     const informant = new informants.FederatedInformant(antibiogo)
 
     let connected = true
@@ -34,7 +38,7 @@ export class Antibiogo {
       connected = false
     }
 
-    let prototypicalModel: centroids.Centroids
+    let prototypicalModel: Centroids
 
     if (!connected && (config.prototypes === undefined)) {
       throw new TypeError('unable to initialize prototypical model')
@@ -44,7 +48,7 @@ export class Antibiogo {
       prototypicalModel = await client.getLatestModel()
     } else {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      prototypicalModel = centroids.fromJson(config.prototypes!)
+      prototypicalModel = fromJson(config.prototypes!)
     }
 
     const trainer = new PrototypicalTrainer(informant, prototypicalModel)
@@ -59,7 +63,7 @@ export class Antibiogo {
    * @returns Predictions set for each given pellet
    */
   public identify (embeddings: string): string[][] {
-    const dataset = data.loadEmbeddings(embeddings)
+    const dataset = loadEmbeddings(embeddings)
     return this.trainer.predict(dataset.toArray())
   }
 
@@ -68,8 +72,8 @@ export class Antibiogo {
    * @param pellets Array of base64 pellet images
    * @param labels Array of validated labels
    */
-  public fit (embeddings: string, labels: string[]): centroids.CentroidsJson {
-    const dataset = data.loadEmbeddings(embeddings)
+  public fit (embeddings: string, labels: string[]): CentroidsJson {
+    const dataset = loadEmbeddings(embeddings)
 
     if (labels.length !== dataset.size) {
       throw new Error('length mismatch between samples and labels')
@@ -77,7 +81,7 @@ export class Antibiogo {
 
     this.trainer.trainModel(dataset.toArray(), labels)
 
-    return centroids.toJson(this.trainer.prototypes)
+    return toJson(this.trainer.prototypes)
   }
 
   /**

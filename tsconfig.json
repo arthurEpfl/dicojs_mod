@@ -1,23 +1,63 @@
+// {
+//   "compilerOptions": {
+//     "target": "ES5",
+//     "lib": ["ES5", "DOM"],
+
+//     "strict": true,
+
+//     "esModuleInterop": true,
+//     "skipLibCheck": true,
+//     "moduleResolution": "node",
+//     "importHelpers": true,
+//     "downlevelIteration": true,
+    
+//     "declaration": true,
+//     "declarationDir": "dist/node",
+    
+//     "typeRoots": ["./node_modules/@types"],
+
+//     "outDir": "dist",
+//     "baseUrl": "."
+//   },
+//   "include": ["src/**/*.ts"]
+// }
+
+// {
+//   "extends": "../tsconfig.base.json",
+//   "compilerOptions": {
+//     "module": "ESNext",
+//     "moduleResolution": "node16",
+//     "target": "ES2020",
+//     "outDir": "dist",
+//     "declaration": true,
+//     "baseUrl": ".",
+//     "paths": {
+//       "*": ["node_modules/*"],
+//       "@src/*": ["src/*"]
+//     }
+//   },
+//   "include": ["src/**/*.ts"],
+//   "exclude": ["**/*.spec.ts"]
+// }
+
 {
   "compilerOptions": {
-    "target": "ES5",
-    "lib": ["ES5", "DOM"],
-
-    "strict": true,
-
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "downlevelIteration": true,
-    
-    "declaration": true,
-    "declarationDir": "dist/node",
-    
-    "typeRoots": ["./node_modules/@types"],
-
-    "outDir": "dist",
-    "baseUrl": "."
+    "target": "ES2020",                // Modern ES features
+    "module": "Node16",                // ECMAScript modules
+    "lib": ["ES2020", "DOM"],          // Target ES2020 and browser APIs
+    "strict": true,                    // Enable strict type-checking
+    "esModuleInterop": true,           // Compatibility for CommonJS modules
+    "skipLibCheck": true,              // Skip type checking for libraries
+    // "moduleResolution": "node16",      // Modern Node.js module resolution
+    "importHelpers": true,             // Reduce code size by importing helpers
+    "downlevelIteration": true,        // Support iterables in ES5/ES3
+    "declaration": true,               // Generate `.d.ts` files
+    "declarationDir": "dist/node",     // Output directory for `.d.ts` files
+    "typeRoots": ["./node_modules/@types"], // Custom type declarations
+    "outDir": "./dist",                  // Output directory for compiled files
+    "baseUrl": ".",                    // Base directory for module resolution
+    "resolveJsonModule": true          // Allow importing `.json` files
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],          // Include all `.ts` files in `src`
+  "exclude": ["node_modules", "dist"]  // Exclude unnecessary directories
 }

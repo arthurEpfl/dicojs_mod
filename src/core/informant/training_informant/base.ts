@@ -1,7 +1,8 @@
 import { List, Set } from 'immutable'
 
-import { Task } from '../../task'
-import { GraphInformant } from '../graph_informant'
+import { Task } from '../../task/task.js'
+import { GraphInformant } from '../graph_informant.js'
+import { DataType } from '@epfml/discojs'
 
 export abstract class Base {
   // written feedback
@@ -18,7 +19,7 @@ export abstract class Base {
   protected averageNumberOfParticipants = 0
 
   constructor (
-    public readonly task: Task,
+    public readonly task: Task<DataType>,
     private readonly nbrMessagesToShow: number = 10
   ) {}
 

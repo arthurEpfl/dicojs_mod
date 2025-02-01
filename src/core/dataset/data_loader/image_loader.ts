@@ -1,9 +1,13 @@
 import { Range } from 'immutable'
 
-import { tf } from 'tfjs'
-import { Dataset } from '../dataset'
-import { Data, ImageData, DataSplit } from '../data'
-import { DataLoader, DataConfig } from '../data_loader'
+import * as tf from '@tensorflow/tfjs'
+import { Dataset } from '../dataset.js'
+import { Data } from '../data/data.js'
+import { DataSplit } from '../data/data_split.js'
+import { ImageData } from '../data/image_data.js'
+import { DataLoader, DataConfig } from './data_loader.js'
+
+import { DataType } from '@epfml/discojs'
 
 /**
  * TODO @s314cy:
@@ -54,12 +58,16 @@ export abstract class ImageLoader<Source> extends DataLoader<Source> {
 
     return await ImageData.init(dataset, this.task, indices.length)
   }
+  
 
   async loadAll (images: Source[], config?: DataConfig): Promise<DataSplit> {
     let labels: number[] = []
     const indices = Range(0, images.length).toArray()
     if (config?.labels !== undefined) {
-      const numberOfClasses = this.task.trainingInformation?.LABEL_LIST?.length
+      // For some reason, task still old def??? So LABEL_LIST not avaliable
+      // Give mock number for now
+      // const numberOfClasses = this.task.trainingInformation?.LABEL_LIST?.length
+      const numberOfClasses = 2
       if (numberOfClasses === undefined) {
         throw new Error('wanted labels but none found in task')
       }

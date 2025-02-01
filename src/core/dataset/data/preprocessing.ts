@@ -1,5 +1,7 @@
-import { tf } from 'tfjs'
-import { Task } from '../..'
+import * as tf from '@tensorflow/tfjs'
+import { type Task } from '../../task/task.js'
+
+import { type DataType } from '@epfml/discojs'
 
 type PreprocessImage = (image: tf.TensorContainer) => tf.TensorContainer
 
@@ -15,21 +17,23 @@ export enum ImagePreprocessing {
   Resize = 'resize'
 }
 
-export function getPreprocessImage (task: Task): PreprocessImage {
+// Ignore the preprocessing steps for now as we start directly from embeddings
+
+export function getPreprocessImage (task: Task<DataType>): PreprocessImage {
   const preprocessImage: PreprocessImage = (tensorContainer: tf.TensorContainer): tf.TensorContainer => {
     // TODO unsafe cast, tfjs does not provide the right interface
     const info = task.trainingInformation
     let { xs, ys } = tensorContainer as ImageTensorContainer
-    if (info.preprocessingFunctions?.includes(ImagePreprocessing.Normalize)) {
-      xs = xs.div(tf.scalar(255))
-    }
-    if (info.preprocessingFunctions?.includes(ImagePreprocessing.Resize) &&
-      info.IMAGE_H !== undefined &&
-      info.IMAGE_W !== undefined) {
-      xs = tf.image.resizeBilinear(xs, [
-        info.IMAGE_H, info.IMAGE_W
-      ])
-    }
+    // if (info.preprocessingFunctions?.includes(ImagePreprocessing.Normalize)) {
+    //   xs = xs.div(tf.scalar(255))
+    // }
+    // if (info.preprocessingFunctions?.includes(ImagePreprocessing.Resize) &&
+    //   info.IMAGE_H !== undefined &&
+    //   info.IMAGE_W !== undefined) {
+    //   xs = tf.image.resizeBilinear(xs, [
+    //     info.IMAGE_H, info.IMAGE_W
+    //   ])
+    // }
     return {
       xs,
       ys

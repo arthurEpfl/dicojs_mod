@@ -1,6 +1,6 @@
 import { List } from 'immutable'
-import { WeightsContainer } from '../../core/weights/weights_container'
-import { tf } from 'tfjs'
+import { WeightsContainer } from '../../core/weights/weights_container.js'
+import * as tf from '@tensorflow/tfjs'
 
 export type CentroidsJson = Array<{ position: number[], label: string, radius: number, count: number }>
 

@@ -1,8 +1,8 @@
 import isomorphic from 'isomorphic-ws'
 import { EventEmitter } from 'events'
 import msgpack from 'msgpack-lite'
-import { type, NarrowMessage, Message } from './messages'
-import { timeout } from './utils'
+import { type, NarrowMessage, Message } from './messages.js'
+import { timeout } from './utils.js'
 
 export interface EventConnection {
   on: <K extends type>(type: K, handler: (event: NarrowMessage<K>) => void) => void
@@ -23,6 +23,9 @@ export async function waitMessage<T extends type> (connection: EventConnection, 
 export async function waitMessageWithTimeout<T extends type> (connection: EventConnection, type: T, timeoutMs: number): Promise<NarrowMessage<T>> {
   return await Promise.race([waitMessage(connection, type), timeout(timeoutMs)])
 }
+
+// import { client } from '@epfml/discojs'
+// There is no export path to event_connection.ts so need to add it in fork
 
 export class WebSocketServer implements EventConnection {
   private constructor (

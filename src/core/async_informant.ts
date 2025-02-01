@@ -1,4 +1,4 @@
-import { AsyncBuffer } from './async_buffer'
+import { AsyncBuffer } from './async_buffer.js'
 
 export class AsyncInformant<T> {
   private round = 0

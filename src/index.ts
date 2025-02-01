@@ -1,10 +1,10 @@
-import { Antibiogo } from './msf'
+import { Antibiogo } from './msf/trainer/antibiogo.js'
 
-export { tf } from 'tfjs'
-export * from './core'
-export { Config, defaultConfig } from './config'
+import * as tf from '@tensorflow/tfjs'
+export * from './core/index.js'
+export { Config, defaultConfig } from './config.js'
 
-export * as msf from './msf'
+export * as msf from './msf/index.js'
 
 if (typeof window !== 'undefined') {
   Object.defineProperty(window, 'Antibiogo', { value: Antibiogo })

@@ -1,2 +1,3 @@
-export * as federated from './federated'
-export * as messages from './messages'
+// warning for this one, might cause issues!!!
+export * as federated from './federated/messages.js'
+export * as messages from './messages.js'

@@ -1,3 +1,3 @@
-export { Base } from './base'
+export { Base } from './base.js'
 
-export { FederatedInformant } from './federated'
+export { FederatedInformant } from './federated.js'

@@ -1,10 +1,10 @@
-import { centroids } from './msf'
+import { CentroidsJson } from './msf/weights/centroids.js'
 
 export interface Config {
   protocol: 'http' | 'https'
   hostname: string
   port: number
-  prototypes?: centroids.CentroidsJson
+  prototypes?: CentroidsJson
 }
 
 export const defaultConfig: Config = {

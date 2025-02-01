@@ -1,13 +1,27 @@
 import { v4 as randomUUID } from 'uuid'
-import * as nodeUrl from 'url'
+// import * as nodeUrl from 'url'
 import axios from 'axios'
 
-import * as messages from '../../../core/client/federated/messages'
-import { privacy, informant, MetadataID, Task } from '../../../core'
-import { type, clientConnected } from '../../../core/client/messages'
-import { EventConnection, waitMessageWithTimeout, WebSocketServer } from '../../../core/client/event_connection'
-import { MAX_WAIT_PER_ROUND } from '../../../core/client/utils'
-import { centroids, antibiogo, serialization } from '../..'
+
+import * as messages from '../../../core/client/federated/messages.js'
+import { privacy } from '../../../core/index.js'
+import { informant } from '../../../core/informant/index.js'
+// This is just a string type not needed as MetaDataID type:
+// import { MetadataID } from '../../../core/types.js' 
+// import { Task } from '../../../core/task/task.js'
+import { type, clientConnected } from '../../../core/client/messages.js'
+// need to add export path to EventConnection.ts in DISCO
+import { EventConnection, waitMessageWithTimeout, WebSocketServer } from '../../../core/client/event_connection.js'
+// MAX_WAIT_PER_ROUND exists in DISCO, no problem here
+import { MAX_WAIT_PER_ROUND } from '../../../core/client/utils.js'
+// Centroids defined in MSF just calls on weightsContainer, so is fine
+import { Centroids } from '../../weights/centroids.js'
+// From serialiazation
+import { decodeCentroids, encodeCentroids } from '../../serialization/weights.js'
+// antibiogo defined in new Task format, need to figure out export missing for some params
+import { antibiogo } from '../../task.js'
+
+import { type Task, type DataType } from '@epfml/discojs'
 
 /**
  * Class that deals with communication with the centralized server when training
@@ -15,7 +29,7 @@ import { centroids, antibiogo, serialization } from '../..'
  */
 export class AntibiogoClient {
   protected connected = false
-  public readonly task: Task = antibiogo
+  public readonly task: Task<DataType> = antibiogo
 
   constructor (
     public readonly url: URL
@@ -29,7 +43,7 @@ export class AntibiogoClient {
 
   // Attributes used to wait for a response from the server
   private serverRound?: number
-  private centroids?: centroids.Centroids
+  private centroids?: Centroids
   private receivedStatistics?: Record<string, number>
   private metadataMap?: Map<string, unknown>
 
@@ -52,7 +66,7 @@ export class AntibiogoClient {
    * should return the current server-side round for the task.
    */
   async connect (): Promise<void> {
-    const URL = typeof window !== 'undefined' ? window.URL : nodeUrl.URL
+    // const URL = typeof window !== 'undefined' ? window.URL : nodeUrl.URL
     const serverURL = new URL('', this.url.href)
     switch (this.url.protocol) {
       case 'http:':
@@ -89,10 +103,10 @@ export class AntibiogoClient {
   }
 
   // It sends weights to the server
-  async postWeightsToServer (centroids: centroids.Centroids): Promise<void> {
+  async postWeightsToServer (centroids: Centroids): Promise<void> {
     const msg: messages.postWeightsToServer = {
       type: type.postWeightsToServer,
-      weights: await serialization.weights.encodeCentroids(centroids),
+      weights: await encodeCentroids(centroids),
       round: this.round
     }
     this.sendMessage(msg)
@@ -111,13 +125,13 @@ export class AntibiogoClient {
     const received = await waitMessageWithTimeout(this.server, type.latestServerRound, MAX_WAIT_PER_ROUND)
 
     this.serverRound = received.round
-    this.centroids = serialization.weights.decodeCentroids(received.weights)
+    this.centroids = decodeCentroids(received.weights)
 
     return this.serverRound
   }
 
   // It retrieves the last server round and weights, but return only the server weights
-  async pullRoundAndFetchWeights (): Promise<centroids.Centroids | undefined> {
+  async pullRoundAndFetchWeights (): Promise<Centroids | undefined> {
     // get server round of latest model
     await this.getLatestServerRound()
 
@@ -147,56 +161,58 @@ export class AntibiogoClient {
     trainingInformant.update(this.receivedStatistics ?? {})
   }
 
+  // Same here, function never used in the codebase, useless
   // It posts a new metadata value to the server
-  async postMetadata (metadataID: MetadataID, metadata: string): Promise<void> {
-    const msg: messages.postMetadata = {
-      type: type.postMetadata,
-      taskId: this.task.taskID,
-      clientId: this.clientID,
-      round: this.round,
-      metadataId: metadataID,
-      metadata: metadata
-    }
+  // async postMetadata (metadataID: string, metadata: string): Promise<void> {
+  //   const msg: messages.postMetadata = {
+  //     type: type.postMetadata,
+  //     taskId: this.task.id,
+  //     clientId: this.clientID,
+  //     round: this.round,
+  //     metadataId: metadataID,
+  //     metadata: metadata
+  //   }
 
-    this.sendMessage(msg)
-  }
+  //   this.sendMessage(msg)
+  // }
 
+  // This function is never used in the codebase, useless
   // It gets a metadata map from the server
-  async getMetadataMap (
-    metadataId: MetadataID
-  ): Promise<Map<string, unknown> | undefined> {
-    this.metadataMap = undefined
+  // async getMetadataMap (
+  //   metadataId: string
+  // ): Promise<Map<string, unknown> | undefined> {
+  //   this.metadataMap = undefined
 
-    const msg: messages.getMetadataMap = {
-      type: type.getMetadataMap,
-      taskId: this.task.taskID,
-      clientId: this.clientID,
-      round: this.round,
-      metadataId: metadataId
-    }
+  //   const msg: messages.getMetadataMap = {
+  //     type: type.getMetadataMap,
+  //     taskId: this.task.id,
+  //     clientId: this.clientID,
+  //     round: this.round,
+  //     metadataId: metadataId
+  //   }
 
-    this.sendMessage(msg)
+  //   this.sendMessage(msg)
 
-    const received = await waitMessageWithTimeout(this.server, type.getMetadataMap, MAX_WAIT_PER_ROUND)
-    if (received.metadataMap !== undefined) {
-      this.metadataMap = new Map(received.metadataMap)
-    }
+  //   const received = await waitMessageWithTimeout(this.server, type.getMetadataMap, MAX_WAIT_PER_ROUND)
+  //   if (received.metadataMap !== undefined) {
+  //     this.metadataMap = new Map(received.metadataMap)
+  //   }
 
-    return this.metadataMap
-  }
+  //   return this.metadataMap
+  // }
 
   async onRoundEndCommunication (
-    updatedCentroids: centroids.Centroids,
-    staleCentroids: centroids.Centroids,
+    updatedCentroids: Centroids,
+    staleCentroids: Centroids,
     _: number,
     trainingInformant: informant.FederatedInformant
-  ): Promise<centroids.Centroids> {
+  ): Promise<Centroids> {
     const noisyCentroids = privacy.addDifferentialPrivacy(
       updatedCentroids.positions,
       staleCentroids.positions,
       this.task
     )
-    const payload = new centroids.Centroids(
+    const payload = new Centroids(
       noisyCentroids,
       updatedCentroids.radius,
       updatedCentroids.counts,
@@ -212,16 +228,15 @@ export class AntibiogoClient {
 
   async onTrainEndCommunication (): Promise<void> {}
 
-  async getLatestModel (): Promise<centroids.Centroids> {
+  async getLatestModel (): Promise<Centroids> {
     const url = new URL('', this.url.href)
     if (!url.pathname.endsWith('/')) {
       url.pathname += '/'
     }
-    url.pathname += `tasks/${this.task.taskID}`
-
+    url.pathname += `tasks/${this.task.id}`
     const response = await axios.get(url.href)
 
-    return serialization.weights.decodeCentroids(response.data)
+    return decodeCentroids(response.data)
   }
 
   get isConnected (): boolean {

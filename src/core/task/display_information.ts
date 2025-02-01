@@ -1,5 +1,5 @@
-import { Summary, isSummary } from './summary'
-import { DataExample, isDataExample } from './data_example'
+import { Summary, isSummary } from './summary.js'
+import { DataExample, isDataExample } from './data_example.js'
 
 export function isDisplayInformation (raw: unknown): raw is DisplayInformation {
   if (typeof raw !== 'object') {

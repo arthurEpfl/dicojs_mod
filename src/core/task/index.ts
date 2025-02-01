@@ -1,3 +1,3 @@
-export { isTask, Task, isTaskID, TaskID } from './task'
-export { isDisplayInformation, DisplayInformation } from './display_information'
-export { TrainingInformation } from './training_information'
+export { isTask, Task, isTaskID, TaskID } from './task.js'
+export { isDisplayInformation, DisplayInformation } from './display_information.js'
+export { TrainingInformation } from './training_information.js'

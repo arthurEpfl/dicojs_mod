@@ -1,3 +1,3 @@
-import { AntibiogoClient } from './antibiogo_client'
+import { AntibiogoClient } from './antibiogo_client.js'
 
 export { AntibiogoClient }

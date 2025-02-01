@@ -1,1 +1,1 @@
-export * as weights from './weights'
+export * as weights from './weights.js'

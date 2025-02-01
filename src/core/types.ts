@@ -1,4 +1,4 @@
-import { tf } from 'tfjs'
+import * as tf from '@tensorflow/tfjs'
 
 // Filesystem reference
 export type Path = string

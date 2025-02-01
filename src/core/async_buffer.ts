@@ -1,6 +1,7 @@
 import { Map } from 'immutable'
 
-import { TaskID, AsyncInformant } from '.'
+import { AsyncInformant } from './async_informant.js'
+import { TaskID } from './task/task.js'
 
 /**
  * The AsyncWeightsBuffer class holds and manipulates information about the
@@ -38,6 +39,11 @@ export class AsyncBuffer<T> {
   }
 
   public async updateWeights (): Promise<void> {
+
+    // Debug steps 
+    console.log('Buffer size:', this.buffer.size);
+    console.log('Buffer content:', this.buffer.toArray());
+
     await this.aggregateAndStoreWeights(this.buffer.values())
 
     this.round += 1

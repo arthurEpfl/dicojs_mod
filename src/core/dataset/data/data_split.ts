@@ -1,4 +1,4 @@
-import { Data } from './data'
+import { Data } from './data.js'
 
 export interface DataSplit {
   train: Data

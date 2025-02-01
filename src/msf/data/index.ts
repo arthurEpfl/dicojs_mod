@@ -1,1 +1,1 @@
-export { loadEmbeddings } from './data'
+export { loadEmbeddings } from './data.js'

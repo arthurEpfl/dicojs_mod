@@ -1,13 +1,15 @@
-import { Task } from '../..'
-import { Dataset } from '../dataset'
-import { DataSplit } from '../data'
+import { type Task } from '../../task/task.js'
+import { Dataset } from '../dataset.js'
+import { DataSplit } from '../data/data_split.js'
+
+import { DataType } from '@epfml/discojs'
 
 export interface DataConfig { features?: string[], labels?: string[], shuffle?: boolean, validationSplit?: number }
 
 export abstract class DataLoader<Source> {
-  protected task: Task
+  protected task: Task<DataType>
 
-  constructor (task: Task) {
+  constructor (task: Task<DataType>) {
     this.task = task
   }
 
